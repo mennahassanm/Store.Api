@@ -11,6 +11,7 @@ namespace Shared
         public int? BrandId { get; set; }
         public int? TypeId { get; set; }
         public string? Sort {  get; set; }
+        public string? Search { get; set; }
 
         private int _PageIndex = 1;
         private int _PageSize = 5;
