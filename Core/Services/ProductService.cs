@@ -10,12 +10,12 @@ using Services.Abstractions;
 using Services.Specifications;
 using Shared;
 
-namespace Services
+namespace Services  
 {
     public class ProductService(IUnitOfWork unitOfWork, IMapper mapper) : IProductService
     {
 
-        public async Task<IEnumerable<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParamters specParams)
+        public async Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParamters specParams)
         {
             var spec = new ProductWithBrandsAndTypesSpecifications(specParams);
 
@@ -23,10 +23,15 @@ namespace Services
 
             var products = await unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);
 
+            var specCount = new ProductWithCountSpecifications(specParams);
+
+            var count = await unitOfWork.GetRepository<Product, int>().CountAsync(specCount);
+
             // Mapping IEnumerable To IEnumerable<ProductResultDto> : Automapper
 
             var result = mapper.Map<IEnumerable<ProductResultDto>>(products);
-            return result;
+
+            return new PaginationResponse<ProductResultDto>(specParams.PageIndex , specParams.PageSize , count , result );
 
         }
         public async Task<ProductResultDto?> GetProductByIdAsync(int id)

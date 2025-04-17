@@ -69,9 +69,15 @@ namespace Persistence.Repositories
            return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
+        public async Task<int> CountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
+        }
         private IQueryable <TEntity> ApplySpecification(ISpecifications <TEntity , TKey> spec)
         {
             return SpecificationEvaluator.GetQuary(_context.Set<TEntity>(), spec);
         }
+
+       
     }
 }
