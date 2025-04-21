@@ -24,13 +24,14 @@ namespace Services
 
             var products = await unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);
 
-            var specCount = new ProductWithCountSpecifications(specParams);
+            var result = mapper.Map<IEnumerable<ProductResultDto>>(products);
 
-            var count = await unitOfWork.GetRepository<Product, int>().CountAsync(specCount);
+            var totalSpec = new ProductWithCountSpecifications(specParams);
+
+            var count = await unitOfWork.GetRepository<Product, int>().CountAsync(totalSpec);
 
             // Mapping IEnumerable To IEnumerable<ProductResultDto> : Automapper
 
-            var result = mapper.Map<IEnumerable<ProductResultDto>>(products);
 
             return new PaginationResponse<ProductResultDto>(specParams.PageIndex , specParams.PageSize , count , result );
 
