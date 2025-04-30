@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Attributes;
 using Services.Abstractions;
 using Shared;
 using Shared.ErrorModels;
@@ -26,6 +27,7 @@ namespace Presentation
         [ProducesResponseType(StatusCodes.Status200OK , Type =typeof(PaginationResponse<ProductResultDto>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError  , Type =typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest , Type =typeof(ErrorDetails))]
+        [Cache(100)]
         public async Task<ActionResult<PaginationResponse<ProductResultDto>>>GetAllProducts([FromQuery]ProductSpecificationsParamters specParams)
         {
             var result = await serviceManager.ProductService.GetAllProductsAsync(specParams);
@@ -46,6 +48,9 @@ namespace Presentation
             if (result is null) return NotFound();
             return Ok(result);
         }
+
+
+
         [HttpGet ("brands")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandResultDto>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -56,6 +61,8 @@ namespace Presentation
             if (result is null) return BadRequest(); // 400
             return Ok(result); // 200
         }
+
+
 
         [HttpGet("types")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResponse<TypeResultDto>))]
